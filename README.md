@@ -39,13 +39,32 @@ How It Works (High Level)
    - Emit a clear Vietnamese confirmation (tạm giữ chỗ) with thời gian, phòng, bác sĩ, hotline; append profile summary.
 
 Data & Knowledge Sources
-- data/departments.csv — departments (id, name, aliases, floors, notes)
-- data/doctors.csv — doctors (specialization, titles, phones, department)
-- data/schedules.csv — day-of-week/time slots, room ids
-- data/rooms.csv — room labels per department
-- data/booking_channels.csv — hotline, web, counter, app
-- data/medical_kg.csv — head/rel/tail triples used to enrich graph facts
-- data/infor.md — curated disease → department lists (parsed to a mapping)
+
+### Structured Data (CSV)
+- **data/departments.csv** — departments (id, name, aliases, floors, notes)
+- **data/doctors.csv** — doctors (specialization, titles, phones, department)
+- **data/schedules.csv** — day-of-week/time slots, room ids
+- **data/rooms.csv** — room labels per department
+- **data/booking_channels.csv** — hotline, web, counter, app
+
+### Knowledge Graph & Curated Mappings
+- **data/medical_kg.csv** — head/rel/tail triples used to enrich graph facts
+- **data/infor.md** — curated disease → department lists (parsed to a mapping)
+
+### Medical Q&A Dataset
+- **ViMedAQA** ([Hugging Face](https://huggingface.co/datasets/tmnam20/ViMedAQA/))
+  - A comprehensive Vietnamese medical question-answering dataset
+  - Provides domain-specific medical knowledge in Vietnamese language
+  - Used to enhance the vector retrieval component of GraphRAG
+  - Helps ground responses with authentic Vietnamese medical terminology and common patient questions
+  - Ingested into FAISS embeddings for semantic search during retrieval phase
+  - Improves accuracy for symptom description understanding and medical advice generation
+
+**Integration Approach:**
+- ViMedAQA question-answer pairs are preprocessed and embedded alongside other medical documents
+- During retrieval, relevant Q&A pairs are surfaced to provide contextually appropriate medical guidance
+- Answers are adapted to fit the chatbot's structured response format (suspected diagnosis, self-care, red flags, booking)
+- Helps bridge the gap between formal medical literature and conversational patient language
 
 Generalization Strategy
 - Accent-agnostic normalization for matching Vietnamese inputs reliably.
@@ -57,21 +76,21 @@ What You Can Expect
 - Evidence-citing prompt context (graph facts + retrieved snippets) to keep answers grounded.
 - Deterministic, CSV-driven booking proposals that you can later wire to a real HIS system.
 
-Demo Placeholders (add your images later)
-![Demo Chat](docs/images/demo-chat-1.png)
-![Booking Suggestion](docs/images/demo-booking-1.png)
-![Graph Facts + Context](docs/images/demo-context-1.png)
+Demo Image:
+![Demo Chat](medical_chatbot.png)
+![Booking Suggestion](medical_booking.png)
 
 Safety & Limitations
 - Educational/triage assistant; not a substitute for a licensed clinician.
 - Always advises escalation for red-flag symptoms (đau tăng, sốt cao, nôn liên tục, máu trong phân, mất nước nặng...).
-- Coverage reflects the curated infor.md and available texts; expand these sources to broaden scope.
+- Coverage reflects the curated infor.md, ViMedAQA dataset, and available texts; expand these sources to broaden scope.
 
 Roadmap
 - Expand curated disease → department map, incl. pediatric vs adult nuances.
 - Add lightweight forms to explicitly capture tuổi/giới tính/mang thai/thời điểm khởi phát.
 - Optional appointment persistence to a DB or HIS API.
 - Add evaluation harness of conversation transcripts for regression checks.
+- Continuous expansion of ViMedAQA coverage and medical knowledge base.
 
 ## Version 2: Callbot (...update soon...)
 
